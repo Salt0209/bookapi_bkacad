@@ -1,0 +1,6 @@
+com\bkacad\app\exceptions\DatabaseActionException.class
+com\bkacad\app\controllers\BookAPIController.class
+com\bkacad\app\models\dao\BookDAO.class
+com\bkacad\app\models\dao\BookDAOImpl.class
+com\bkacad\app\exceptions\AbstractException.class
+com\bkacad\app\models\entities\Book.class
