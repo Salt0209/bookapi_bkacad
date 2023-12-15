@@ -35,43 +35,31 @@ public class BookAPIController {
         List<Book> lBooks = bookDAO.findBooksByPage(psize,pnum);
         return new ResponseEntity<Object>(lBooks,HttpStatus.OK);
     }
-
-    @RequestMapping(value = "/books/{variable}",method = RequestMethod.GET)
-    public ResponseEntity<Object> getBookById(@PathVariable String variable) throws DatabaseActionException{
-        if(isNumber(variable)){
-            int id = Integer.parseInt(variable);
-            Optional<Book> book = bookDAO.findBookById(id);
-            if(book.isPresent()){
-                return new ResponseEntity<Object>(book.get(),HttpStatus.OK);
-            }
-            return new ResponseEntity<Object>("Can't find this id: "+id,HttpStatus.NOT_FOUND);
+    @RequestMapping(value = "/books",method = RequestMethod.GET, params = "id")
+    public ResponseEntity<Object> findBookById(@RequestParam("id") int id){
+        Optional<Book> book = bookDAO.findBookById(id);
+        if(book.isPresent()){
+            return new ResponseEntity<Object>(book.get(),HttpStatus.OK);
         }
-        else if (variable instanceof String) {
-            
-            String title = (String) variable;
-            List<Book> book = bookDAO.findBookByTitle(title);
-            if(!book.isEmpty()){
-                return new ResponseEntity<Object>(book,HttpStatus.OK);
-            }
-            return new ResponseEntity<Object>("Can't find this title: "+title,HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<Object>("Can't know this parameter: "+variable,HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<Object>("Can't find this id: "+id,HttpStatus.NOT_FOUND);
     }
-    private boolean isNumber(String value) {
-        try {
-            Integer.parseInt(value);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
+    @RequestMapping(value = "/books",method = RequestMethod.GET, params = "title")
+    public ResponseEntity<Object> findBookByTitle(@RequestParam("title") String title){
+        List<Book> book = bookDAO.findBookByTitle(title);
+        if(!book.isEmpty()){
+            return new ResponseEntity<Object>(book,HttpStatus.OK);
         }
+        return new ResponseEntity<Object>("Can't find this title: "+title,HttpStatus.NOT_FOUND);
     }
 
-    @RequestMapping(value = "/books/author/{name}",method = RequestMethod.GET)
-    public ResponseEntity<Object> findBookByAuthor(@PathVariable String name){
+
+    @RequestMapping(value = "/books",method = RequestMethod.GET, params = "author")
+    public ResponseEntity<Object> findBookByAuthor(@RequestParam("author") String name){
         List<Book> lBooks = bookDAO.findBookByAuthor(name);
-        return new ResponseEntity<Object>(lBooks,HttpStatus.OK);
-
-        // return new ResponseEntity<Object>("Can't find the author name: "+name,HttpStatus.NOT_FOUND);
+        if(!lBooks.isEmpty()){
+            return new ResponseEntity<Object>(lBooks,HttpStatus.OK);
+        }
+        return new ResponseEntity<Object>("Can't find the author name: "+name,HttpStatus.NOT_FOUND);
     }
 
 
